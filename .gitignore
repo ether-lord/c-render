@@ -1,0 +1,8 @@
+# vscode files
+.vscode
+
+# cmake build files
+build
+
+# shell script for building and running the code
+run.sh
