@@ -1,7 +1,7 @@
-#ifndef SHADER_H
-#define SHADER_H
+#ifndef __SHADER_H
+#define __SHADER_H
 
 typedef struct _shader {
 } shader_t;
 
-#endif  // SHADER_H
+#endif  // __SHADER_H
