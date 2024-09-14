@@ -9,6 +9,7 @@
 #include "shader.h"
 #include "stb_image.h"
 #include "window.h"
+#include "shaderprogram.h"
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action,
                          int mods) {
@@ -76,16 +77,7 @@ int main() {
   shader_compile_by_id(vertex_shader->id);
   shader_compile_by_id(fragment_shader->id);
 
-  /// TODO: implement shader program and shader deletion
-
-  unsigned int shader_program;
-  shader_program = glCreateProgram();
-
-  glAttachShader(shader_program, vertex_shader->id);
-  glAttachShader(shader_program, fragment_shader->id);
-  glLinkProgram(shader_program);
-
-  glUseProgram(shader_program);
+  shader_program_t* program = program_create(vertex_shader, fragment_shader);
 
   unsigned int texture;
   glGenTextures(1, &texture);
@@ -113,6 +105,8 @@ int main() {
   }
   stbi_image_free(data);
 
+  program_use(program);
+
   while (!glfwWindowShouldClose(window)) {
     // render
     // ------
@@ -133,9 +127,7 @@ int main() {
   glDeleteBuffers(1, &VBO);
   glDeleteBuffers(1, &EBO);
 
-  shader_delete_by_id(vertex_shader->id);
-  shader_delete_by_id(fragment_shader->id);
-
+  program_destroy(program);
   window_close(window);
 
   return 0;

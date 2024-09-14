@@ -1,6 +1,7 @@
 set(PROJECT_SOURCES
   window.c window.h
   shader.c shader.h
+  shaderprogram.c shaderprogram.h
 )
 
 add_library(crender ${PROJECT_SOURCES})
