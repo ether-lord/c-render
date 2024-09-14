@@ -1,8 +1,8 @@
 #include "shader.h"
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 shader_t* shader_create(GLenum type, const char* path_to_shader) {
   FILE* shader_file = fopen(path_to_shader, "r");
@@ -19,10 +19,11 @@ shader_t* shader_create(GLenum type, const char* path_to_shader) {
     fprintf(stderr, "Failed to read from shader file by path:%s\n",
             path_to_shader);
 
+  fclose(shader_file);
+
   GLuint shader_id = glCreateShader(type);
   shader_t* shader = (shader_t*)malloc(sizeof(shader_t));
-  *shader = (shader_t){
-      .id = shader_id, .type = type, .path = path_to_shader, .source = buffer};
+  *shader = (shader_t){.id = shader_id, .type = type, .source = buffer};
 
   glShaderSource(shader->id, 1, &shader->source, NULL);
 
@@ -36,6 +37,9 @@ int shader_compile_by_id(GLuint shader_id) {
   int compile_status;
   char infoLog[512];
   glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compile_status);
-
   return compile_status;
+}
+
+void shader_delete_by_id(GLuint shader_id) {
+  glDeleteShader(shader_id);
 }
