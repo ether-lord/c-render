@@ -1,17 +1,18 @@
-add_library(shader SHARED shader.h shader.c)
-add_library(window SHARED window.h window.c)
+set(PROJECT_SOURCES
+  window.c window.h
+  shader.c shader.h
+)
+
+add_library(crender ${PROJECT_SOURCES})
 
 find_package(glfw3 REQUIRED)
 
+set(LIBRARIES shader window)
+set(THIRD_PARTY_LIBS glfw glad)
+
 # third-party libraries
-target_link_libraries(window PUBLIC glfw)
-target_link_libraries(window PUBLIC glad)
+target_link_libraries(crender PUBLIC ${THIRD_PARTY_LIBS})
 
-target_link_libraries(shader PUBLIC glfw)
-target_link_libraries(shader PUBLIC glad)
-
-target_include_directories(window PUBLIC third-party/glad)
-target_include_directories(shader PUBLIC third-party/glad)
-
+target_include_directories(crender PUBLIC third-party/glad)
 
 add_subdirectory(third-party/glad)
