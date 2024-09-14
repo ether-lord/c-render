@@ -17,4 +17,6 @@ typedef struct _shader {
 
 shader_t* shader_create(GLenum type, const char* path_to_shader);
 
+int shader_compile_by_id(GLuint shader_id);
+
 #endif  // __SHADER_H

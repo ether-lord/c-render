@@ -47,10 +47,10 @@ int main() {
   shader_t* fragment_shader =
       shader_create(GL_FRAGMENT_SHADER, "../res/fragment.glsl");
 
-  glShaderSource(vertex_shader->id, 1, &vertex_shader->source, NULL);
-  glCompileShader(vertex_shader->id);
-  glShaderSource(fragment_shader->id, 1, &fragment_shader->source, NULL);
-  glCompileShader(fragment_shader->id);
+  shader_compile_by_id(vertex_shader->id);
+  shader_compile_by_id(fragment_shader->id);
+
+  /// TODO: implement shader program
 
   unsigned int shader_program;
   shader_program = glCreateProgram();
@@ -68,7 +68,6 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     // render the triangle
-    // ourShader.use();
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved

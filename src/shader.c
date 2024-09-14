@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 shader_t* shader_create(GLenum type, const char* path_to_shader) {
   FILE* shader_file = fopen(path_to_shader, "r");
@@ -23,5 +24,18 @@ shader_t* shader_create(GLenum type, const char* path_to_shader) {
   *shader = (shader_t){
       .id = shader_id, .type = type, .path = path_to_shader, .source = buffer};
 
+  glShaderSource(shader->id, 1, &shader->source, NULL);
+
   return shader;
+}
+
+// returns -1 if compilation failed
+int shader_compile_by_id(GLuint shader_id) {
+  glCompileShader(shader_id);
+
+  int compile_status;
+  char infoLog[512];
+  glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compile_status);
+
+  return compile_status;
 }
