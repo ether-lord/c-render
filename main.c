@@ -10,6 +10,7 @@
 #include "stb_image.h"
 #include "window.h"
 #include "shaderprogram.h"
+#include "resourcesmanager.h"
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action,
                          int mods) {
@@ -19,6 +20,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 
 int main() {
   window_glfw_init();
+  resman_init();
 
   GLFWwindow* window = window_create(1024, 640, "crender", NULL, NULL);
   window_set_current_context(window);
@@ -68,11 +70,19 @@ int main() {
   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
                         (void*)(6 * sizeof(float)));
   glEnableVertexAttribArray(2);
+  
 
+  char* vertex_shader_path = resman_get_shader_path("vertex");
+  char* fragment_shader_path = resman_get_shader_path("fragment");
+
+  printf("%s\n", fragment_shader_path);
   shader_t* vertex_shader =
-      shader_create(GL_VERTEX_SHADER, "../res/vertex.glsl");
+      shader_create(GL_VERTEX_SHADER, vertex_shader_path);
   shader_t* fragment_shader =
-      shader_create(GL_FRAGMENT_SHADER, "../res/fragment.glsl");
+      shader_create(GL_FRAGMENT_SHADER, fragment_shader_path);
+
+  free(vertex_shader_path);
+  free(fragment_shader_path);
 
   shader_compile_by_id(vertex_shader->id);
   shader_compile_by_id(fragment_shader->id);
