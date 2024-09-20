@@ -19,7 +19,10 @@ void window_set_current_context(GLFWwindow* window) {
   glfwMakeContextCurrent(window);
 }
 
-void window_close(GLFWwindow* window) { glfwDestroyWindow(window); }
+void window_close(GLFWwindow* window) {
+  glfwDestroyWindow(window);
+  glfwTerminate();
+}
 
 void window_glfw_init(void) {
   int glfw_init_status = glfwInit();

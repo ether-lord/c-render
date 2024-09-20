@@ -15,7 +15,7 @@ void rmanager_init(void);
 const char *const rmanager_getdir();
 char *rmanager_get_shader_path(const char* shader_name);
 
-shader_t* rmanager_get_shader(GLenum type, const char* name);
+shader_t* rmanager_load_shader(GLenum type, const char* name);
 
 
 #endif  // __RESOURCESMANAGER_H

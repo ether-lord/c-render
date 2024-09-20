@@ -16,13 +16,13 @@ shader_program_t* program_create(shader_t* vertex_sh, shader_t* fragment_sh) {
   *shader_program = (shader_program_t){.id = program_id,
                                        .vertex_shader = vertex_sh,
                                        .fragment_shader = fragment_sh};
+  glDeleteShader(vertex_sh->id);
+  glDeleteShader(fragment_sh->id);
   return shader_program;
 }
 
 void program_use(shader_program_t* program) { glUseProgram(program->id); }
 
 void program_destroy(shader_program_t* program) {
-  shader_delete_by_id(program->vertex_shader->id);
-  shader_delete_by_id(program->fragment_shader->id);
   glDeleteProgram(program->id);
 }

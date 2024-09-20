@@ -27,7 +27,7 @@ char *rmanager_get_shader_path(const char *shader_name) {
   return shader_abs_path;
 }
 
-shader_t *rmanager_get_shader(GLenum type, const char *name) {
+shader_t *rmanager_load_shader(GLenum type, const char *name) {
   char *shader_absolute_path = rmanager_get_shader_path(name);
   shader_t *shader = shader_create(type, shader_absolute_path);
   free(shader_absolute_path);

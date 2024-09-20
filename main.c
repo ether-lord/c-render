@@ -6,11 +6,11 @@
 
 #include "cglm/cglm.h"
 #include "glad.h"
+#include "resourcesmanager.h"
 #include "shader.h"
+#include "shaderprogram.h"
 #include "stb_image.h"
 #include "window.h"
-#include "shaderprogram.h"
-#include "resourcesmanager.h"
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action,
                          int mods) {
@@ -33,11 +33,11 @@ int main() {
   glfwSetKeyCallback(window, key_callback);
 
   float vertices[] = {
-      // positions          // colors           // texture coords
-      0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,  // top right
-      0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
-      -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom left
-      -0.5f, 0.5f,  0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f   // top left
+      // positions                  // texture coords
+      0.5f,  0.5f,  0.0f, 1.0f, 1.0f,  // top right
+      0.5f,  -0.5f, 0.0f, 1.0f, 0.0f,  // bottom right
+      -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  // bottom left
+      -0.5f, 0.5f,  0.0f, 0.0f, 1.0f   // top left
   };
 
   unsigned int indices[] = {
@@ -60,25 +60,21 @@ int main() {
                GL_STATIC_DRAW);
 
   // position attribute
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
   // color attribute
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
                         (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
-  // texture coord attribute
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                        (void*)(6 * sizeof(float)));
-  glEnableVertexAttribArray(2);
 
-  shader_t* vertex_shader = rmanager_get_shader(GL_VERTEX_SHADER, "vertex");
-  shader_t* fragment_shader = rmanager_get_shader(GL_FRAGMENT_SHADER, "fragment");
+  shader_t* vertex_shader = rmanager_load_shader(GL_VERTEX_SHADER, "vertex");
+  shader_t* fragment_shader =
+      rmanager_load_shader(GL_FRAGMENT_SHADER, "fragment");
 
   shader_compile_by_id(vertex_shader->id);
   shader_compile_by_id(fragment_shader->id);
 
   shader_program_t* program = program_create(vertex_shader, fragment_shader);
-
   unsigned int texture;
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
@@ -107,6 +103,10 @@ int main() {
 
   program_use(program);
 
+  mat4 transform = GLM_MAT4_IDENTITY_INIT;
+
+  unsigned int transformLoc = glGetUniformLocation(program->id, "transform");
+
   while (!glfwWindowShouldClose(window)) {
     // render
     // ------
@@ -115,6 +115,12 @@ int main() {
 
     // render the triangle
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    glm_mat4_identity(transform);
+    glm_translate(transform, (vec3){0.5f, -0.5f, 0.0f});
+    glm_rotate(transform, (float)glfwGetTime(), (vec3){0.0f, 0.0f, 1.0f});
+
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, transform[0]);
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved
     // etc.)
@@ -129,6 +135,6 @@ int main() {
 
   program_destroy(program);
   window_close(window);
-
+  
   return 0;
 }
